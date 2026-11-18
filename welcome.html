@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Welcome to Lassoft</title><link rel="icon" href="icons/icon32.png">
+<style>
+:root{--bg:#f6f7fb;--panel:#fff;--ink:#14161c;--muted:#5f6675;--line:#e3e6ef;--accent:#4f46e5;--accent2:#06b6d4;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--panel:#1a1d24;--ink:#eef0f6;--muted:#9aa1b2;--line:#2b2f3b;--accent:#818cf8;--accent2:#22d3ee;color-scheme:dark}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:56px 24px 72px}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:36px;align-items:center}
+h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.06;letter-spacing:-.03em;margin:0 0 14px}
+.hero p{color:var(--muted);font-size:1.12rem;margin:0}
+.logo{justify-self:center;width:190px;height:190px;border-radius:46px;background:url(icons/icon128.png) center/100% no-repeat;box-shadow:0 30px 60px -28px var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:44px 0}
+.c{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
+.c h3{margin:0 0 6px;font-size:1.08rem}.c p{margin:0;color:var(--muted);font-size:.95rem}
+.c .i{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;margin-bottom:12px}
+h2{font-size:1.45rem;letter-spacing:-.02em;margin:40px 0 12px}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+td{padding:11px 14px;border-bottom:1px solid var(--line)}tr:last-child td{border:0}
+kbd{font:600 12.5px ui-monospace,monospace;padding:3px 7px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;background:var(--bg)}
+.note{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px 18px;color:var(--muted)}
+@media (max-width:760px){.hero,.grid{grid-template-columns:1fr}.logo{display:none}}
+</style></head><body><div class="wrap">
+<section class="hero"><div><h1>Capture, record and extract anything you can see</h1><p>Lassoft puts screenshots, screen recording, a design inspector, a data scraper and a media finder in one button. Everything runs on your device.</p></div><div class="logo" role="img" aria-label="Lassoft logo"></div></section>
+<section class="grid">
+  <div class="c"><div class="i">1</div><h3>Pin Lassoft</h3><p>Click the puzzle piece in Chrome’s toolbar, then the pin next to Lassoft, so it’s one click away.</p></div>
+  <div class="c"><div class="i">2</div><h3>Capture or record</h3><p>Drag an area, draw a lasso, click an element, or capture the whole page. Annotate, blur and download as an image or PDF.</p></div>
+  <div class="c"><div class="i">3</div><h3>Extract what you need</h3><p>Turn lists and tables into spreadsheets, find every image, video, audio and file, and reveal hidden content.</p></div>
+</section>
+<h2>Shortcuts</h2>
+<table><tr><td>Open Lassoft</td><td><kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd></td></tr><tr><td>Capture an area</td><td><kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>A</kbd></td></tr><tr><td>Capture the full page</td><td><kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>F</kbd></td></tr><tr><td>Scrape data</td><td><kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd></td></tr><tr><td>Everything else</td><td>Right-click any page and choose Lassoft</td></tr></table>
+<p style="color:var(--muted);font-size:.92rem">Change shortcuts at <kbd>chrome://extensions/shortcuts</kbd>.</p>
+<h2>Use it responsibly</h2>
+<p class="note">Lassoft only saves files that a page already shows openly. It doesn’t bypass logins, paywalls, DRM or streaming protection. Respect copyright, each site’s terms, and people’s privacy, especially when scraping contact details.</p>
+</div></body></html>

@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "Lassoft: Capture, Record and Extract",
+  "short_name": "Lassoft",
+  "version": "1.1.0",
+  "description": "Capture areas or full pages, record your screen, inspect fonts and colours, scrape data and find media on any site. Private.",
+  "minimum_chrome_version": "116",
+  "homepage_url": "https://github.com/suhaimizainalshah/Lassoft",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Lassoft",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "downloads",
+    "contextMenus"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+L"
+      },
+      "description": "Open Lassoft"
+    },
+    "capture-area": {
+      "suggested_key": {
+        "default": "Alt+Shift+A"
+      },
+      "description": "Capture an area"
+    },
+    "capture-full": {
+      "suggested_key": {
+        "default": "Alt+Shift+F"
+      },
+      "description": "Capture the full page"
+    },
+    "scrape-page": {
+      "suggested_key": {
+        "default": "Alt+Shift+E"
+      },
+      "description": "Scrape data from the page"
+    }
+  }
+}

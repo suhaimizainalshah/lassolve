@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lassoft recorder</title>
+<link rel="icon" href="icons/icon32.png">
+<style>
+:root{--bg:#f3f4f9;--panel:#fff;--ink:#14161c;--muted:#5f6675;--line:#e3e6ef;--soft:#eef0f6;--accent:#4f46e5;--accent2:#06b6d4;--rec:#ef4444;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--panel:#1a1d24;--ink:#eef0f6;--muted:#9aa1b2;--line:#2b2f3b;--soft:#232733;--accent:#818cf8;--accent2:#22d3ee;color-scheme:dark}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;display:grid;place-items:center;padding:32px 16px}
+button,select{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:10px}
+.card{width:min(620px,100%);background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 70px -40px rgba(0,0,0,.45);padding:28px;display:grid;gap:20px}
+.head{display:flex;align-items:center;gap:12px}.head img{width:36px;height:36px}.head h1{margin:0;font-size:22px;letter-spacing:-.02em}
+.muted{color:var(--muted);margin:0;font-size:14px}
+.opts{display:grid;gap:14px}
+.lbl{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{display:grid;justify-items:center;gap:6px;padding:14px 8px;border:1.5px solid var(--line);border-radius:14px;background:var(--panel);font-weight:650;font-size:14px}
+.seg button svg{width:26px;height:26px;color:var(--muted)}
+.seg button[aria-pressed=true]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel))}.seg button[aria-pressed=true] svg{color:var(--accent)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.sw:last-child{border:0}
+.sw small{display:block;color:var(--muted);font-size:12.5px}
+.sw input{appearance:none;width:40px;height:23px;border-radius:999px;background:var(--line);position:relative;flex:none;cursor:pointer;transition:.15s}
+.sw input::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:.15s}
+.sw input:checked{background:var(--accent)}.sw input:checked::after{left:19px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+select{width:100%;height:40px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+.go{height:54px;border:0;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 14px 30px -16px var(--accent)}
+.go i{width:14px;height:14px;border-radius:50%;background:var(--rec);box-shadow:0 0 0 3px rgba(255,255,255,.85)}
+.count{position:fixed;inset:0;display:grid;place-items:center;background:rgba(10,12,20,.55);color:#fff;font:800 120px/1 system-ui;z-index:9}
+.live{display:grid;justify-items:center;gap:14px;text-align:center;padding:10px 0}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--rec);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+.timer{font:800 48px/1 ui-monospace,monospace;letter-spacing:-.02em}
+.ctrls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border:1px solid var(--line);border-radius:12px;background:var(--panel);font-weight:700}
+.btn:hover{background:var(--soft)}.btn.stop{border:0;background:var(--rec);color:#fff}.btn.primary{border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+video{width:100%;border-radius:14px;background:#000;max-height:60vh}
+.meta{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:13.5px}
+.err{padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--rec) 10%,var(--panel));font-size:14px}
+@media (prefers-reduced-motion:reduce){.dot{animation:none}}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="head"><img src="icons/icon48.png" alt=""><div><h1 id="title">Record your screen</h1><p class="muted" id="sub">Choose what to record. Chrome will ask you to pick it next.</p></div></div>
+
+  <section id="setup" class="opts">
+    <div><div class="lbl" id="whatL">What to record</div><div class="seg" role="radiogroup" aria-labelledby="whatL">
+      <button data-s="browser" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg>A tab</button>
+      <button data-s="window" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M8 6V4h14v12h-6"/></svg>A window</button>
+      <button data-s="monitor" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Whole screen</button>
+    </div></div>
+    <div>
+      <label class="sw"><span>Sound from the tab or screen<small>Videos, calls and system sounds</small></span><input type="checkbox" id="sysAudio" checked></label>
+      <label class="sw"><span>Microphone<small id="micNote">Narrate as you record</small></span><input type="checkbox" id="mic"></label>
+      <label class="sw"><span>Camera bubble<small>A floating webcam window that shows in window and screen recordings</small></span><input type="checkbox" id="cam"></label>
+      <label class="sw"><span>3-second countdown</span><input type="checkbox" id="countdown" checked></label>
+    </div>
+    <div class="row">
+      <div><div class="lbl">Quality</div><select id="quality"><option value="720">720p, smaller file</option><option value="1080" selected>1080p Full HD</option><option value="0">As sharp as the screen</option></select></div>
+      <div><div class="lbl">Smoothness</div><select id="fps"><option value="30" selected>30 frames a second</option><option value="60">60, for fast motion</option></select></div>
+    </div>
+    <p class="muted">Tip: turn on Cursor highlight, Click ripples or Show keystrokes in Lassoft’s Page effects to make tutorials easier to follow.</p>
+    <div class="err" id="err" hidden></div>
+    <button class="go" id="start"><i></i>Start recording</button>
+  </section>
+
+  <section id="live" class="live" hidden>
+    <div style="display:flex;align-items:center;gap:10px"><span class="dot" id="dot"></span><strong id="state">Recording</strong></div>
+    <div class="timer" id="timer" aria-live="off">00:00</div>
+    <div class="ctrls">
+      <button class="btn" id="pause">Pause</button>
+      <button class="btn" id="muteMic" hidden>Mute mic</button>
+      <button class="btn stop" id="stop">Stop and review</button>
+    </div>
+    <p class="muted">You can switch to the tab or app you’re recording. Press Space here to pause, or use Chrome’s “Stop sharing” bar.</p>
+  </section>
+
+  <section id="done" class="opts" hidden>
+    <video id="preview" controls playsinline></video>
+    <div class="meta" id="meta"></div>
+    <div class="ctrls" style="justify-content:flex-start">
+      <button class="btn primary" id="download">Download</button>
+      <button class="btn" id="again">Record again</button>
+    </div>
+    <p class="muted">Want to trim, add music or captions? Open the file in a video editor such as Booth Video.</p>
+  </section>
+</main>
+<div class="count" id="count" hidden>3</div>
+<script src="recorder.js"></script>
+</body>
+</html>
