@@ -1,14 +1,14 @@
-/* Lassoft page toolkit. Injected only when you use Lassoft on a page. All UI lives in a closed
+/* Lassolve page toolkit. Injected only when you use Lassolve on a page. All UI lives in a closed
    Shadow DOM so it can't clash with the site's styles, and everything runs on your device. */
 (() => {
-  if (window.__lassoft) return;
+  if (window.__lassolve) return;
   const send = m => new Promise(res => { try { chrome.runtime.sendMessage(m, r => { void chrome.runtime.lastError; res(r); }); } catch { res(null); } });
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const host = location.hostname.replace(/^www\./, "") || "page";
 
   /* ---------- shadow UI ---------- */
-  const root = document.createElement("lassoft-ui"); root.style.cssText = "all:initial;position:fixed;inset:0;z-index:2147483647;pointer-events:none";
+  const root = document.createElement("lassolve-ui"); root.style.cssText = "all:initial;position:fixed;inset:0;z-index:2147483647;pointer-events:none";
   const sh = root.attachShadow({ mode: "closed" });
   sh.innerHTML = `<style>
   :host{--bg:#fff;--panel:#f6f7fb;--ink:#14161c;--muted:#5f6675;--line:#e3e6ef;--accent:#4f46e5;--accent2:#06b6d4;--ok:#16a34a;--warn:#ea580c;color-scheme:light}
@@ -153,7 +153,7 @@
   const inPoly = (x, y, pts) => { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
   function textIn(sel) {
     if (sel.el) return sel.el.innerText.trim();
-    const r = sel.rect, out = [], tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: n => (n.nodeValue.trim() && !n.parentElement.closest("lassoft-ui,script,style,noscript") ? 1 : 2) }); let n;
+    const r = sel.rect, out = [], tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode: n => (n.nodeValue.trim() && !n.parentElement.closest("lassolve-ui,script,style,noscript") ? 1 : 2) }); let n;
     while ((n = tw.nextNode())) { const range = document.createRange(); range.selectNodeContents(n); const b = range.getBoundingClientRect(); const cx = b.left + scrollX + b.width / 2, cy = b.top + scrollY + b.height / 2; if (b.width && cx >= r.x && cx <= r.x + r.w && cy >= r.y && cy <= r.y + r.h && (!sel.points || inPoly(cx, cy, sel.points))) out.push(n.nodeValue.trim()); }
     return out.join(" ").replace(/\s+\n/g, "\n");
   }
@@ -174,9 +174,9 @@
   }
   let hidden = [];
   function hideUi(on) { root.style.visibility = on ? "hidden" : ""; }
-  function prepare() { hideUi(true); document.documentElement.classList.add("__lassoft-cap"); if (!document.getElementById("__lassoft-style")) { const s = document.createElement("style"); s.id = "__lassoft-style"; s.textContent = "html.__lassoft-cap{scrollbar-width:none!important}html.__lassoft-cap::-webkit-scrollbar{display:none!important}html.__lassoft-cap,html.__lassoft-cap *{scroll-behavior:auto!important}"; document.head.appendChild(s); } return metrics(); }
+  function prepare() { hideUi(true); document.documentElement.classList.add("__lassolve-cap"); if (!document.getElementById("__lassolve-style")) { const s = document.createElement("style"); s.id = "__lassolve-style"; s.textContent = "html.__lassolve-cap{scrollbar-width:none!important}html.__lassolve-cap::-webkit-scrollbar{display:none!important}html.__lassolve-cap,html.__lassolve-cap *{scroll-behavior:auto!important}"; document.head.appendChild(s); } return metrics(); }
   function hideFixed() { if (hidden.length) return; document.querySelectorAll("body *").forEach(e => { const p = getComputedStyle(e).position; if ((p === "fixed" || p === "sticky") && e !== root) { hidden.push([e, e.style.visibility]); e.style.setProperty("visibility", "hidden", "important"); } }); }
-  function restore(scroll) { hidden.forEach(([e, v]) => (e.style.visibility = v)); hidden = []; document.documentElement.classList.remove("__lassoft-cap"); hideUi(false); if (scroll) scrollTo(scroll.x, scroll.y); }
+  function restore(scroll) { hidden.forEach(([e, v]) => (e.style.visibility = v)); hidden = []; document.documentElement.classList.remove("__lassolve-cap"); hideUi(false); if (scroll) scrollTo(scroll.x, scroll.y); }
   function metrics() { const d = document.documentElement, b = document.body; return { vw: d.clientWidth || innerWidth, vh: innerHeight, dpr: devicePixelRatio || 1, sx: scrollX, sy: scrollY, docW: Math.max(d.scrollWidth, b?.scrollWidth || 0, d.clientWidth), docH: Math.max(d.scrollHeight, b?.scrollHeight || 0, d.clientHeight) }; }
 
   /* ---------- page effects ---------- */
@@ -218,7 +218,7 @@
     drawFx(); return Object.keys(fx);
   }
   function lensScroll() { clearTimeout(lensT); lensT = setTimeout(refreshLens, 250); }
-  function styleTag(id, css) { let s = document.getElementById("__lassoft-" + id); if (!css) { s?.remove(); return; } if (!s) { s = document.createElement("style"); s.id = "__lassoft-" + id; document.head.appendChild(s); } s.textContent = css; }
+  function styleTag(id, css) { let s = document.getElementById("__lassolve-" + id); if (!css) { s?.remove(); return; } if (!s) { s = document.createElement("style"); s.id = "__lassolve-" + id; document.head.appendChild(s); } s.textContent = css; }
   function stopFx() { Object.keys(fx).forEach(k => setFx(k, false)); }
 
   /* ---------- visual inspector, eyedropper and page palette ---------- */
@@ -334,7 +334,7 @@
   function repeatedGroups() {
     const groups = [];
     document.querySelectorAll("body *").forEach(p => {
-      if (p.closest("lassoft-ui,nav,footer,header,select,table") || p.children.length < 3) return; const by = new Map();
+      if (p.closest("lassolve-ui,nav,footer,header,select,table") || p.children.length < 3) return; const by = new Map();
       for (const c of p.children) { if (!vis(c)) continue; const s = sig(c); by.set(s, [...(by.get(s) || []), c]); }
       for (const [, items] of by) { if (items.length < 3) continue; const avg = items.reduce((a, c) => a + txt(c).length, 0) / items.length; if (avg < 12 || avg > 1500) continue; groups.push({ items, score: items.length * Math.min(avg, 300) * (items[0].querySelector("a[href]") ? 1.4 : 1) * (items[0].querySelector("img") ? 1.2 : 1) }); }
     });
@@ -401,7 +401,7 @@
       document.querySelectorAll("meta[property='og:image'],meta[name='twitter:image'],meta[property='og:video'],meta[property='og:audio']").forEach(m => { const p = m.getAttribute("property") || m.getAttribute("name"); add(abs(m.content), /video/.test(p) ? "video" : /audio/.test(p) ? "audio" : "image", { label: "Share image (" + p + ")", hidden: true }); });
       document.querySelectorAll("link[rel~='icon'],link[rel='apple-touch-icon']").forEach(l => add(abs(l.href), "image", { label: "Site icon", hidden: true }));
       document.querySelectorAll("noscript").forEach(n => (n.textContent.match(/src=["']([^"']+)["']/g) || []).forEach(m => add(abs(m.slice(5, -1)), "image", { hidden: true, label: "Inside <noscript>" })));
-      document.querySelectorAll("svg").forEach((s, i) => { if (i > 60 || s.closest("lassoft-ui") || s.getBoundingClientRect().width < 24) return; const code = new XMLSerializer().serializeToString(s); if (code.length < 200000) add("data:image/svg+xml;charset=utf-8," + encodeURIComponent(code), "image", { label: "Inline SVG", svg: true }); });
+      document.querySelectorAll("svg").forEach((s, i) => { if (i > 60 || s.closest("lassolve-ui") || s.getBoundingClientRect().width < 24) return; const code = new XMLSerializer().serializeToString(s); if (code.length < 200000) add("data:image/svg+xml;charset=utf-8," + encodeURIComponent(code), "image", { label: "Inline SVG", svg: true }); });
     }
     let n = 0; for (const e of document.querySelectorAll("body *")) { if (++n > 3000) break; if (!inside(e)) continue; const bg = getComputedStyle(e).backgroundImage; if (bg && bg !== "none") (bg.match(/url\(["']?([^"')]+)["']?\)/g) || []).forEach(m => { const u = m.replace(/^url\(["']?|["']?\)$/g, ""); if (!u.startsWith("data:")) add(abs(u), "image", { label: "Background image", hidden: isHidden(e) }); }); }
     try { if (!within) performance.getEntriesByType("resource").forEach(r => { for (const [kind, re] of Object.entries(EXT)) if (re.test(r.name)) { add(r.name, kind === "stream" ? "stream" : kind, { label: "Loaded by the page", hidden: true, size: r.encodedBodySize || r.transferSize || 0 }); break; } }); } catch {}
@@ -432,7 +432,7 @@
       const sync = () => { dl.textContent = sel.size ? `Download ${sel.size}` : "Download"; dl.disabled = !sel.size; };
       all.onclick = () => { const v = list.filter(x => x.kind !== "stream"); const every = v.every(x => sel.has(x.url)); v.forEach(x => (every ? sel.delete(x.url) : sel.add(x.url))); render(b, f); };
       cp.onclick = async () => { const urls = (sel.size ? [...sel] : list.map(x => x.url)).filter(u => !u.startsWith("data:")).join("\n"); try { await navigator.clipboard.writeText(urls); toast("Links copied"); } catch { toast("Couldn’t copy"); } };
-      dl.onclick = async () => { const chosen = items.filter(x => sel.has(x.url)); if (chosen.length > 25 && !confirm(`Download ${chosen.length} files?`)) return; for (const [i, it] of chosen.entries()) await send({ type: "download", url: it.url, filename: `Lassoft/${host}/${nameFromUrl(it.url, it.kind, i)}` }); toast(`${chosen.length} download${chosen.length > 1 ? "s" : ""} started. Only save what you have the right to use.`, 4000); };
+      dl.onclick = async () => { const chosen = items.filter(x => sel.has(x.url)); if (chosen.length > 25 && !confirm(`Download ${chosen.length} files?`)) return; for (const [i, it] of chosen.entries()) await send({ type: "download", url: it.url, filename: `Lassolve/${host}/${nameFromUrl(it.url, it.kind, i)}` }); toast(`${chosen.length} download${chosen.length > 1 ? "s" : ""} started. Only save what you have the right to use.`, 4000); };
       sync();
     };
     openDrawer(opts.within ? "Media in your selection" : "Media and files", [{ name: "All media", render }]);
@@ -442,7 +442,7 @@
   let revealed = [];
   function revealHidden(on) {
     revealed.forEach(([e, s]) => e.setAttribute("style", s || "")); revealed = []; if (!on) return 0;
-    document.querySelectorAll("body *:not(script):not(style):not(noscript):not(template):not(lassoft-ui)").forEach(e => { if (revealed.length > 400) return; const cs = getComputedStyle(e); if ((cs.display === "none" || cs.visibility === "hidden") && (e.textContent.trim() || e.querySelector("img,video"))) { const prev = e.getAttribute("style"); revealed.push([e, prev]); e.style.setProperty("display", cs.display === "none" ? (/^(SPAN|A|B|I|EM|STRONG|LABEL)$/.test(e.tagName) ? "inline" : "block") : cs.display, "important"); e.style.setProperty("visibility", "visible", "important"); e.style.setProperty("outline", "2px dashed #a855f7", "important"); e.style.setProperty("background", "rgba(168,85,247,.08)", "important"); } });
+    document.querySelectorAll("body *:not(script):not(style):not(noscript):not(template):not(lassolve-ui)").forEach(e => { if (revealed.length > 400) return; const cs = getComputedStyle(e); if ((cs.display === "none" || cs.visibility === "hidden") && (e.textContent.trim() || e.querySelector("img,video"))) { const prev = e.getAttribute("style"); revealed.push([e, prev]); e.style.setProperty("display", cs.display === "none" ? (/^(SPAN|A|B|I|EM|STRONG|LABEL)$/.test(e.tagName) ? "inline" : "block") : cs.display, "important"); e.style.setProperty("visibility", "visible", "important"); e.style.setProperty("outline", "2px dashed #a855f7", "important"); e.style.setProperty("background", "rgba(168,85,247,.08)", "important"); } });
     return revealed.length;
   }
   function openHidden() {
@@ -461,14 +461,14 @@
 
   /* ---------- public API ---------- */
   function stopAll(keepFx) { selecting?.cancel(); inspector(false); if (!keepFx) {} }
-  window.__lassoft = {
+  window.__lassolve = {
     select: runSelection, capture, prepare, hideFixed, restore, metrics, toast, setFx, stopFx, fxState: () => Object.keys(fx),
     inspector, eyedropper, palette, openScraper, pickToScrape, openMedia, openHidden, findMedia, tables, repeatedGroups, itemsToTable,
     progress: (t) => { let p = sh.querySelector(".prog"); if (!t) { p?.remove(); return; } if (!p) { p = el("div", "prog"); app.appendChild(p); } p.textContent = t; },
   };
   try {
     chrome.runtime.onMessage.addListener((m, _s, reply) => {
-      const L = window.__lassoft; let r;
+      const L = window.__lassolve; let r;
       switch (m.type) {
         case "tool": {
           const t = m.tool;

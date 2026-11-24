@@ -1,16 +1,16 @@
-/* Lassoft service worker: runs tools, captures and stitches screenshots, stores captures,
+/* Lassolve service worker: runs tools, captures and stitches screenshots, stores captures,
    and handles downloads. Nothing is uploaded anywhere. */
 const TOOLS_NEED_PAGE = ["area", "lasso", "element", "visible", "fullpage", "scrape", "pick", "media", "hidden", "inspect", "eyedropper", "palette"];
 async function inject(tabId) { await chrome.scripting.executeScript({ target: { tabId }, files: ["toolkit.js"] }); }
 async function runTool(tab, tool) {
   if (tool === "record") return chrome.tabs.create({ url: "recorder.html" });
   if (tool === "library") return chrome.tabs.create({ url: "editor.html" });
-  if (!/^(https?|file):/.test(tab?.url || "")) return { error: "Chrome doesn’t allow extensions on this page. Try it on a normal website." };
+  if (!tab?.id || (tab.url && !/^(https?|file):/.test(tab.url))) return { error: "Chrome doesn’t allow extensions on this page. Try it on a normal website." }; // the address can be hidden from activeTab: try unless it's known
   try { await inject(tab.id); await chrome.tabs.sendMessage(tab.id, { type: "tool", tool }); return { ok: true }; } catch (e) { return { error: String(e.message || e) }; }
 }
 
 /* ---------- storage of captures (IndexedDB) ---------- */
-const db = () => new Promise((res, rej) => { const r = indexedDB.open("lassoft", 1); r.onupgradeneeded = () => r.result.createObjectStore("caps", { keyPath: "id" }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+const db = () => new Promise((res, rej) => { const r = indexedDB.open("lassoft", 1) /* internal name kept, so captures saved before the rename to Lassolve stay */; r.onupgradeneeded = () => r.result.createObjectStore("caps", { keyPath: "id" }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
 async function saveCapture(rec) {
   const d = await db(); await new Promise((res, rej) => { const tx = d.transaction("caps", "readwrite"); tx.objectStore("caps").put(rec); tx.oncomplete = res; tx.onerror = () => rej(tx.error); });
   const all = await new Promise(res => { const q = d.transaction("caps").objectStore("caps").getAllKeys(); q.onsuccess = () => res(q.result); });
@@ -70,9 +70,23 @@ chrome.runtime.onMessage.addListener((m, sender, reply) => {
 /* ---------- menus and shortcuts ---------- */
 chrome.runtime.onInstalled.addListener(({ reason }) => {
   const add = (id, title, contexts = ["page", "selection", "image", "link", "video", "audio"]) => chrome.contextMenus.create({ id, title, contexts });
-  chrome.contextMenus.create({ id: "lassoft", title: "Lassoft", contexts: ["page", "selection", "image", "link", "video", "audio"] });
-  [["area", "Capture an area"], ["fullpage", "Capture the full page"], ["element", "Capture an element"], ["scrape", "Scrape data from this page"], ["media", "Find media and files"], ["hidden", "Show hidden items"]].forEach(([id, t]) => chrome.contextMenus.create({ id, parentId: "lassoft", title: t, contexts: ["page", "selection", "image", "link", "video", "audio"] }));
+  chrome.contextMenus.create({ id: "lassolve", title: "Lassolve", contexts: ["page", "selection", "image", "link", "video", "audio"] });
+  [["area", "Capture an area"], ["fullpage", "Capture the full page"], ["element", "Capture an element"], ["scrape", "Scrape data from this page"], ["media", "Find media and files"], ["hidden", "Show hidden items"]].forEach(([id, t]) => chrome.contextMenus.create({ id, parentId: "lassolve", title: t, contexts: ["page", "selection", "image", "link", "video", "audio"] }));
   void add; if (reason === "install") chrome.tabs.create({ url: "welcome.html" });
 });
 chrome.contextMenus.onClicked.addListener((info, tab) => runTool(tab, info.menuItemId));
 chrome.commands.onCommand.addListener(async cmd => { const [tab] = await chrome.tabs.query({ active: true, currentWindow: true }); runTool(tab, { "capture-area": "area", "capture-full": "fullpage", "scrape-page": "scrape" }[cmd] || cmd); });
+
+/* ---------- the address bar ---------- */
+const xesc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+const activeTab = async () => (await chrome.tabs.query({ active: true, lastFocusedWindow: true }))[0];
+function omni(keyword, def, items, enter) { // items: [word, description]
+  chrome.omnibox.setDefaultSuggestion({ description: def });
+  chrome.omnibox.onInputChanged.addListener((text, suggest) => { const t = text.trim().toLowerCase();
+    suggest(items.filter(([w]) => !t || w.startsWith(t.split(" ")[0])).slice(0, 6).map(([w, d]) => ({ content: w, description: `<match>${xesc(keyword + " " + w)}</match>  <dim>${xesc(d)}</dim>` }))); });
+  chrome.omnibox.onInputEntered.addListener(text => enter(text.trim()));
+}
+// lasso shot, full, area, element, scrape, media, colours, eyedropper, inspect, hidden, record, library
+const LASSO = [["shot", "visible", "Capture what’s on screen"], ["full", "fullpage", "Capture the whole page"], ["area", "area", "Drag to capture an area"], ["element", "element", "Capture one part of the page"], ["scrape", "scrape", "Extract tables and lists"], ["media", "media", "Find images, video and audio"], ["colours", "palette", "See the page’s colours"], ["eyedropper", "eyedropper", "Pick a colour from the screen"], ["inspect", "inspect", "Inspect fonts, sizes and spacing"], ["hidden", "hidden", "Show hidden page details"], ["record", "record", "Record your screen"], ["library", "library", "Open your saved captures"]];
+omni("lasso", "Lassolve: type <match>shot</match>, <match>full</match>, <match>area</match>, <match>record</match> and more, or press Enter to capture an area",
+  LASSO.map(([w, , d]) => [w, d]), async t => { const w = t.toLowerCase().split(/\s+/)[0] || "area", hit = LASSO.find(([k, tool]) => k === w || tool === w || k.startsWith(w)); runTool(await activeTab(), hit ? hit[1] : "area"); });

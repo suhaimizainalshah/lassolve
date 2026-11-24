@@ -1,4 +1,4 @@
-/* Lassoft recorder: records a tab, window or screen with optional system sound, microphone and camera bubble. */
+/* Lassolve recorder: records a tab, window or screen with optional system sound, microphone and camera bubble. */
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 let surface = "browser", rec = null, chunks = [], streams = [], t0 = 0, paused = 0, pauseStart = 0, tick = 0, mime = "", blob = null, micTrack = null, camVideo = null, ac = null;
 $$(".seg button").forEach(b => b.onclick = () => { surface = b.dataset.s; $$(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
@@ -38,8 +38,8 @@ $("#start").onclick = async () => {
   rec.onstop = finish;
   display.getVideoTracks()[0].addEventListener("ended", () => rec?.state !== "inactive" && rec.stop());
   rec.start(1000); t0 = Date.now(); paused = 0;
-  $("#setup").hidden = true; $("#live").hidden = false; $("#muteMic").hidden = !micTrack; $("#title").textContent = "Recording"; $("#sub").textContent = "Lassoft is recording what you chose.";
-  tick = setInterval(() => { const now = rec.state === "paused" ? pauseStart : Date.now(); $("#timer").textContent = fmt(now - t0 - paused); document.title = `● ${$("#timer").textContent} Lassoft recorder`; }, 250);
+  $("#setup").hidden = true; $("#live").hidden = false; $("#muteMic").hidden = !micTrack; $("#title").textContent = "Recording"; $("#sub").textContent = "Lassolve is recording what you chose.";
+  tick = setInterval(() => { const now = rec.state === "paused" ? pauseStart : Date.now(); $("#timer").textContent = fmt(now - t0 - paused); document.title = `● ${$("#timer").textContent} Lassolve recorder`; }, 250);
 };
 $("#pause").onclick = () => {
   if (!rec) return;
@@ -52,12 +52,12 @@ function stopAll() { streams.forEach(s => s.getTracks().forEach(t => t.stop()));
 function finish() {
   clearInterval(tick); const dur = Date.now() - t0 - paused; stopAll();
   const type = (rec.mimeType || mime || "video/webm").split(";")[0]; blob = new Blob(chunks, { type }); rec = null;
-  $("#live").hidden = true; $("#done").hidden = false; $("#title").textContent = "Your recording"; $("#sub").textContent = "Watch it back, then download."; document.title = "Lassoft recorder";
+  $("#live").hidden = true; $("#done").hidden = false; $("#title").textContent = "Your recording"; $("#sub").textContent = "Watch it back, then download."; document.title = "Lassolve recorder";
   $("#preview").src = URL.createObjectURL(blob);
   $("#meta").innerHTML = `<span>${fmt(dur)}</span><span>${(blob.size / 1048576).toFixed(1)} MB</span><span>${type.includes("mp4") ? "MP4" : "WebM"}</span>`;
   $("#download").focus();
 }
-$("#download").onclick = () => { if (!blob) return; const a = document.createElement("a"); a.href = $("#preview").src; a.download = `lassoft-recording-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.${blob.type.includes("mp4") ? "mp4" : "webm"}`; a.click(); };
+$("#download").onclick = () => { if (!blob) return; const a = document.createElement("a"); a.href = $("#preview").src; a.download = `lassolve-recording-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.${blob.type.includes("mp4") ? "mp4" : "webm"}`; a.click(); };
 $("#again").onclick = () => { $("#done").hidden = true; $("#setup").hidden = false; $("#title").textContent = "Record your screen"; $("#sub").textContent = "Choose what to record. Chrome will ask you to pick it next."; $("#start").focus(); };
 addEventListener("keydown", e => { if (e.key === " " && !$("#live").hidden && document.activeElement.tagName !== "BUTTON") { e.preventDefault(); $("#pause").click(); } });
 addEventListener("beforeunload", e => { if (rec) { e.preventDefault(); e.returnValue = ""; } });

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lassoft capture</title>
+<title>Lassolve capture</title>
 <link rel="icon" href="icons/icon32.png">
 <style>
 :root{--bg:#f3f4f9;--panel:#fff;--ink:#14161c;--muted:#5f6675;--line:#e3e6ef;--soft:#eef0f6;--accent:#4f46e5;--accent2:#06b6d4;--stage:#e6e8f0;color-scheme:light}
@@ -35,6 +35,13 @@ select{height:34px;border:1px solid var(--line);border-radius:8px;background:var
 #cv{display:block;box-shadow:0 20px 50px -24px rgba(0,0,0,.45);border-radius:6px;background:repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0 0/18px 18px;touch-action:none}
 .side{border-left:1px solid var(--line);background:var(--panel);overflow:auto;padding:14px;display:grid;gap:14px;align-content:start}
 .side h2{margin:0;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.cs-now{margin:.5rem 0 .2rem;font-size:12.5px;color:var(--muted);line-height:1.5}.cs-now b{color:var(--ink,inherit)}
+.cs-lbl{margin:.6rem 0 .3rem;font-size:12px;font-weight:700;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem}.chip{border:1px solid var(--line);background:var(--soft);color:inherit;border-radius:999px;padding:.3rem .6rem;font:inherit;font-size:12px;font-weight:600}.chip[aria-pressed=true]{background:var(--ink,#1b1f24);color:var(--panel,#fff);border-color:transparent}
+.cs-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}.cs-grid label{display:grid;gap:.2rem;font-size:12px;color:var(--muted)}.cs-grid input{width:100%;font:inherit;font-size:13px;padding:.35rem .45rem;border:1px solid var(--line);border-radius:8px;background:var(--panel,#fff);color:inherit}
+.cs-own{grid-template-columns:1fr 1fr auto;align-items:end;margin-top:.45rem}
+.cs-btn{border:0;border-radius:8px;padding:.45rem .7rem;font:inherit;font-size:12.5px;font-weight:700;background:var(--accent,#2b6cb0);color:#fff}.cs-btn.ghost{background:var(--soft);color:inherit;margin-top:.4rem;width:100%}
+.cs-note{margin:.4rem 0 0;font-size:12px;color:#c05621;min-height:0}
 .info{display:grid;gap:4px;font-size:13px}
 .info a{color:var(--accent);overflow-wrap:anywhere}
 .lib{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -61,7 +68,7 @@ kbd{font:600 11px ui-monospace,monospace;padding:1px 5px;border:1px solid var(--
 </head>
 <body>
 <header class="top">
-  <a class="brand" href="editor.html"><img src="icons/icon48.png" alt="">Lassoft</a>
+  <a class="brand" href="editor.html"><img src="icons/icon48.png" alt="">Lassolve</a>
   <div class="grp" role="toolbar" aria-label="Tools" id="tools">
     <button class="tb" data-t="crop" title="Crop (C)" aria-label="Crop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2v14a2 2 0 0 0 2 2h14M18 22V8a2 2 0 0 0-2-2H2"/></svg></button>
     <button class="tb" data-t="arrow" aria-pressed="true" title="Arrow (A)" aria-label="Arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 19 19 5M10 5h9v9"/></svg></button>
@@ -78,6 +85,7 @@ kbd{font:600 11px ui-monospace,monospace;padding:1px 5px;border:1px solid var(--
   <div class="grp"><button class="tb" id="undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button><button class="tb" id="redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg></button></div>
   <span class="spacer"></span>
   <select id="fmt" aria-label="File format"><option value="png">PNG</option><option value="jpeg">JPG</option><option value="webp">WebP</option><option value="pdf">PDF, one page</option><option value="pdfa4">PDF, A4 pages</option></select>
+  <button class="btn" id="markBtn" title="Mark this screenshot with ticks, comments, marks and audio, for a student">✓ Mark for feedback</button>
   <button class="btn" id="copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Copy</button>
   <button class="btn primary" id="save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download</button>
 </header>
@@ -85,6 +93,18 @@ kbd{font:600 11px ui-monospace,monospace;padding:1px 5px;border:1px solid var(--
   <main class="stage" id="stage"><canvas id="cv" aria-label="Your capture"></canvas></main>
   <aside class="side">
     <section class="info" id="info"></section>
+    <section id="cropSec" hidden><h2>Crop and size</h2>
+      <p class="cs-now" id="csNow"></p>
+      <div class="cs-lbl">Shape while drawing</div>
+      <div class="chips" id="csAspect"><button class="chip" data-a="free" aria-pressed="true">Free</button><button class="chip" data-a="1">1:1</button><button class="chip" data-a="1.3333">4:3</button><button class="chip" data-a="1.7778">16:9</button></div>
+      <div class="cs-lbl">Crop area (pixels)</div>
+      <div class="cs-grid"><label>Width<input type="number" id="csW" min="4"></label><label>Height<input type="number" id="csH" min="4"></label><label>From left<input type="number" id="csX" min="0"></label><label>From top<input type="number" id="csY" min="0"></label></div>
+      <div class="cs-lbl">Exact size for the download</div>
+      <div class="chips" id="csPresets"></div>
+      <div class="cs-grid cs-own"><label>Width<input type="number" id="csOW" min="16" placeholder="1280"></label><label>Height<input type="number" id="csOH" min="16" placeholder="800"></label><button class="cs-btn" id="csUse">Use this size</button></div>
+      <p class="cs-note" id="csNote" aria-live="polite"></p>
+      <button class="cs-btn ghost" id="csClear" hidden>Remove crop and exact size</button>
+    </section>
     <section><h2>Shortcuts</h2><p style="margin:.4rem 0 0;font-size:12.5px;color:var(--muted);line-height:1.8"><kbd>A</kbd> arrow <kbd>R</kbd> box <kbd>T</kbd> text <kbd>N</kbd> step <kbd>B</kbd> blur <kbd>C</kbd> crop<br><kbd>Ctrl</kbd>+<kbd>C</kbd> copy <kbd>Ctrl</kbd>+<kbd>S</kbd> download<br>Choose PDF in the format menu for a document, or A4 pages to print.</p></section>
     <section><div style="display:flex;justify-content:space-between;align-items:center"><h2>My captures</h2><button class="del" id="delCur" title="Delete this capture">Delete</button></div><div class="lib" id="lib" style="margin-top:8px"></div></section>
   </aside>

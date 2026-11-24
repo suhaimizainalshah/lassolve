@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Lassoft: Capture, Record and Extract",
-  "short_name": "Lassoft",
-  "version": "1.1.0",
-  "description": "Capture areas or full pages, record your screen, inspect fonts and colours, scrape data and find media on any site. Private.",
+  "name": "Lassolve: Screenshot, Screen Recorder and Data Extractor",
+  "short_name": "Lassolve",
+  "version": "1.4.0",
+  "description": "Capture screenshots, record your screen, and extract tables, media and text from any page. Private: runs on your device.",
   "minimum_chrome_version": "116",
-  "homepage_url": "https://github.com/suhaimizainalshah/Lassoft",
+  "homepage_url": "https://github.com/suhaimizainalshah/Lassolve",
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Lassoft",
+    "default_title": "Lassolve",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",
@@ -37,7 +37,7 @@
       "suggested_key": {
         "default": "Alt+Shift+L"
       },
-      "description": "Open Lassoft"
+      "description": "Open Lassolve"
     },
     "capture-area": {
       "suggested_key": {
@@ -57,5 +57,8 @@
       },
       "description": "Scrape data from the page"
     }
+  },
+  "omnibox": {
+    "keyword": "lasso"
   }
 }
