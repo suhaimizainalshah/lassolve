@@ -17,6 +17,14 @@ Arrow, box, circle, pen, highlighter, text, numbered steps, blur to hide private
 ### Record
 Record a tab, a window or the whole screen, with sound from the tab or screen, your microphone, or both. Optional floating camera bubble for window and screen recordings, a 3-second countdown, 720p or 1080p, 30 or 60 frames a second, pause and resume, mute the mic, then review and download as MP4 (or WebM).
 
+**Your voice:** switch on **Microphone** to narrate. A meter checks your microphone before you start ("Speak to test"), and shows your voice while you record. The video keeps the sound.
+
+### GIFs
+- **After a recording:** choose the part you want while watching it back (**Set start here**, **Set end here**), the width, the smoothness and whether it loops, then **Create GIF**.
+- **Video to GIF:** turn part of any MP4, WebM or MOV file into a GIF. Open it from the recorder, or go straight to `recorder.html#gif`.
+- **Made for screen recordings:** one palette built from the clip's own colours keeps text crisp, and each frame stores only the pixels that changed, so a still screen costs almost nothing. In a test, a 6-second tutorial clip at 640 px came to 66 KB, against 474 KB with a fixed palette.
+- GIFs cannot hold sound: your voice stays in the video download. Everything is made on your device.
+
 ### Page effects
 Great for tutorials, demos and accessibility: cursor highlight, click ripples, show keystrokes, spotlight, magnifier, reading ruler, dark page, grayscale, layout outlines and pause animations.
 
@@ -56,7 +64,9 @@ background.js    tools, screenshot capture and stitching, storage, downloads, me
 toolkit.js       on-page tools in a Shadow DOM: selection, effects, inspector, scraper, media, hidden items
 popup.html/js    the toolbar panel
 editor.html/js   capture editor and My captures library
-recorder.html/js screen recorder
+recorder.html/js screen recorder (with voice meters)
+recorder-gif.js, gifpanel.js, gifmaker.js  GIFs from recordings and video files
+vendor/gifenc.esm.js  GIF encoder (gifenc 1.0.3 by Matt DesLauriers, MIT licence: vendor/gifenc-LICENSE.md)
 welcome.html     first-run page
 privacy.html, PRIVACY.md  privacy policy
 icons/  store/   icons, Web Store screenshots and listing text

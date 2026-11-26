@@ -1,13 +1,13 @@
-# Chrome Web Store listing for Lassoft
+# Chrome Web Store listing for Lassolve
 
 ## Name
-Lassoft: Capture, Record and Extract
+Lassolve: Capture, Record and Extract
 
 ## Summary (132 characters max)
-Screenshots, full-page capture, screen recording, design inspector, data scraper and media finder in one private extension.
+Screenshots, full-page capture, screen and voice recording, GIFs, design inspector, data scraper and media finder in one private extension.
 
 ## Description
-Lassoft puts the tools you reach for every day behind one button.
+Lassolve puts the tools you reach for every day behind one button.
 
 CAPTURE
 • Drag an area, draw a lasso, click an element, or capture the whole page (stitched automatically).
@@ -16,6 +16,8 @@ CAPTURE
 
 RECORD
 • Record a tab, window or your whole screen with tab sound and your microphone, plus an optional camera bubble.
+• Narrate with your microphone, with a meter that shows your voice is being picked up.
+• Turn a recording, or any video file, into a crisp, small animated GIF.
 • Pause, resume, review and download as MP4.
 
 PAGE EFFECTS
@@ -33,7 +35,7 @@ EXTRACT
 PRIVATE BY DESIGN
 • Everything runs on your device. No accounts, no tracking, no servers.
 
-Lassoft only saves files a page already serves openly. It doesn’t bypass logins, paywalls or DRM.
+Lassolve only saves files a page already serves openly. It doesn’t bypass logins, paywalls or DRM.
 
 ## Category
 Productivity (or Developer Tools)
@@ -42,13 +44,13 @@ Productivity (or Developer Tools)
 Capture, record and extract the visible content of web pages.
 
 ## Permission justifications
-- activeTab, scripting: run Lassoft’s tools on the current page when the user clicks Lassoft, uses a shortcut or the right-click menu.
+- activeTab, scripting: run Lassolve’s tools on the current page when the user clicks Lassolve, uses a shortcut or the right-click menu.
 - downloads: save captures, extracted data and selected files.
 - storage: remember settings.
-- contextMenus: add Lassoft’s tools to the right-click menu.
+- contextMenus: add Lassolve’s tools to the right-click menu.
 
 ## Data usage disclosure
 Does not collect or transmit any user data.
 
 ## Privacy policy URL
-https://github.com/suhaimizainalshah/Lassoft/blob/main/PRIVACY.md
+https://github.com/suhaimizainalshah/Lassolve/blob/main/PRIVACY.md

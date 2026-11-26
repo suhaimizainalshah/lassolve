@@ -4,6 +4,7 @@ const TOOLS_NEED_PAGE = ["area", "lasso", "element", "visible", "fullpage", "scr
 async function inject(tabId) { await chrome.scripting.executeScript({ target: { tabId }, files: ["toolkit.js"] }); }
 async function runTool(tab, tool) {
   if (tool === "record") return chrome.tabs.create({ url: "recorder.html" });
+  if (tool === "gif") return chrome.tabs.create({ url: "recorder.html#gif" });
   if (tool === "library") return chrome.tabs.create({ url: "editor.html" });
   if (!tab?.id || (tab.url && !/^(https?|file):/.test(tab.url))) return { error: "Chrome doesn’t allow extensions on this page. Try it on a normal website." }; // the address can be hidden from activeTab: try unless it's known
   try { await inject(tab.id); await chrome.tabs.sendMessage(tab.id, { type: "tool", tool }); return { ok: true }; } catch (e) { return { error: String(e.message || e) }; }

@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "Lassolve: Screenshot, Screen Recorder and Data Extractor",
   "short_name": "Lassolve",
-  "version": "1.4.0",
-  "description": "Capture screenshots, record your screen, and extract tables, media and text from any page. Private: runs on your device.",
+  "version": "1.5.0",
+  "description": "Screenshots, screen and voice recording, GIFs, and tables, media and text from any page. Private: runs on your device.",
   "minimum_chrome_version": "116",
   "homepage_url": "https://github.com/suhaimizainalshah/Lassolve",
   "action": {

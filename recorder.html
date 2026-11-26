@@ -16,7 +16,7 @@ button,select{font:inherit;color:inherit}button{cursor:pointer}
 .head{display:flex;align-items:center;gap:12px}.head img{width:36px;height:36px}.head h1{margin:0;font-size:22px;letter-spacing:-.02em}
 .muted{color:var(--muted);margin:0;font-size:14px}
 .opts{display:grid;gap:14px}
-.lbl{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
+.lbl{display:block;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .seg button{display:grid;justify-items:center;gap:6px;padding:14px 8px;border:1.5px solid var(--line);border-radius:14px;background:var(--panel);font-weight:650;font-size:14px}
 .seg button svg{width:26px;height:26px;color:var(--muted)}
@@ -42,12 +42,45 @@ select{width:100%;height:40px;padding:0 10px;border:1px solid var(--line);border
 video{width:100%;border-radius:14px;background:#000;max-height:60vh}
 .meta{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:13.5px}
 .err{padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--rec) 10%,var(--panel));font-size:14px}
+/* modes */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px;background:var(--soft);border-radius:14px}
+.modes button{height:40px;border:0;border-radius:11px;background:transparent;font-weight:700;color:var(--muted)}
+.modes button[aria-pressed=true]{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* voice level */
+.lvl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);padding:2px 0 10px}
+.lvl b{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden;position:relative}
+.lvl b i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#22c55e,#eab308 70%,#ef4444);border-radius:99px;transition:width .08s linear}
+.lvl.live{width:min(320px,100%)}
+/* GIF panel */
+.gifpanel{display:grid;gap:12px;border-top:1px solid var(--line);padding-top:18px}
+.gp-h{margin:0;font-size:18px;letter-spacing:-.01em}
+.gp-range{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gp-pair{display:flex;gap:6px}.gp-pair input{flex:1;min-width:0}
+input[type=number]{height:40px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font:inherit}
+.gp-loop{border:0;padding:2px 0}.gp-go{justify-content:flex-start}
+.btn.sm{height:40px;padding:0 12px;font-size:13.5px;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.gp-busy{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px}
+.gp-busy progress{flex:1;min-width:160px;height:10px;accent-color:var(--accent)}
+.gp-out{display:grid;gap:10px}.gp-out img{max-width:100%;border-radius:12px;border:1px solid var(--line);background:repeating-conic-gradient(var(--soft) 0 25%,var(--panel) 0 50%) 0 0/16px 16px}
+.gp-sum{font-size:13.5px}
+/* video to GIF */
+.drop{display:grid;justify-items:center;gap:8px;padding:30px 16px;border:2px dashed var(--line);border-radius:16px;text-align:center;cursor:pointer;color:var(--muted)}
+.drop:hover,.drop.over,.drop:focus-within{border-color:var(--accent);color:var(--ink)}
+.drop svg{width:34px;height:34px;color:var(--accent)}.drop strong{color:var(--ink);font-size:16px}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+@media (max-width:560px){.gp-range,.row{grid-template-columns:1fr}.seg{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.dot{animation:none}}
 </style>
 </head>
 <body>
 <main class="card">
   <div class="head"><img src="icons/icon48.png" alt=""><div><h1 id="title">Record your screen</h1><p class="muted" id="sub">Choose what to record. Chrome will ask you to pick it next.</p></div></div>
+
+  <div class="modes" role="group" aria-label="What would you like to do?" id="modes">
+    <button type="button" data-mode="record" aria-pressed="true">Record screen</button>
+    <button type="button" data-mode="gif" aria-pressed="false">Video to GIF</button>
+  </div>
 
   <section id="setup" class="opts">
     <div><div class="lbl" id="whatL">What to record</div><div class="seg" role="radiogroup" aria-labelledby="whatL">
@@ -57,13 +90,14 @@ video{width:100%;border-radius:14px;background:#000;max-height:60vh}
     </div></div>
     <div>
       <label class="sw"><span>Sound from the tab or screen<small>Videos, calls and system sounds</small></span><input type="checkbox" id="sysAudio" checked></label>
-      <label class="sw"><span>Microphone<small id="micNote">Narrate as you record</small></span><input type="checkbox" id="mic"></label>
+      <label class="sw"><span>Microphone<small id="micNote">Record your voice as you narrate</small></span><input type="checkbox" id="mic"></label>
+      <div class="lvl" id="micTest" hidden><span id="micTestMsg">Speak to test your microphone</span><b aria-hidden="true"><i id="micTestBar"></i></b></div>
       <label class="sw"><span>Camera bubble<small>A floating webcam window that shows in window and screen recordings</small></span><input type="checkbox" id="cam"></label>
       <label class="sw"><span>3-second countdown</span><input type="checkbox" id="countdown" checked></label>
     </div>
     <div class="row">
-      <div><div class="lbl">Quality</div><select id="quality"><option value="720">720p, smaller file</option><option value="1080" selected>1080p Full HD</option><option value="0">As sharp as the screen</option></select></div>
-      <div><div class="lbl">Smoothness</div><select id="fps"><option value="30" selected>30 frames a second</option><option value="60">60, for fast motion</option></select></div>
+      <div><label class="lbl" for="quality">Quality</label><select id="quality"><option value="720">720p, smaller file</option><option value="1080" selected>1080p Full HD</option><option value="0">As sharp as the screen</option></select></div>
+      <div><label class="lbl" for="fps">Smoothness</label><select id="fps"><option value="30" selected>30 frames a second</option><option value="60">60, for fast motion</option></select></div>
     </div>
     <p class="muted">Tip: turn on Cursor highlight, Click ripples or Show keystrokes in Lassolve’s Page effects to make tutorials easier to follow.</p>
     <div class="err" id="err" hidden></div>
@@ -73,6 +107,7 @@ video{width:100%;border-radius:14px;background:#000;max-height:60vh}
   <section id="live" class="live" hidden>
     <div style="display:flex;align-items:center;gap:10px"><span class="dot" id="dot"></span><strong id="state">Recording</strong></div>
     <div class="timer" id="timer" aria-live="off">00:00</div>
+    <div class="lvl live" id="micLive" hidden><span>Your voice</span><b aria-hidden="true"><i id="micLiveBar"></i></b></div>
     <div class="ctrls">
       <button class="btn" id="pause">Pause</button>
       <button class="btn" id="muteMic" hidden>Mute mic</button>
@@ -88,10 +123,25 @@ video{width:100%;border-radius:14px;background:#000;max-height:60vh}
       <button class="btn primary" id="download">Download</button>
       <button class="btn" id="again">Record again</button>
     </div>
-    <p class="muted">Want to trim, add music or captions? Open the file in a video editor such as Booth Video.</p>
+    <p class="muted" id="soundNote">The video keeps the sound you recorded. Want to trim it, or add music or captions? Open the file in a video editor such as Booth Video.</p>
+    <section id="gifRec" aria-label="Make a GIF from this recording"></section>
+  </section>
+
+  <section id="convert" class="opts" hidden>
+    <label class="drop" id="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+      <strong>Choose a video, or drop it here</strong><span>MP4, WebM or MOV. It stays on this device.</span>
+      <input type="file" id="file" accept="video/*,.mov,.mkv"></label>
+    <div id="convWrap" hidden>
+      <video id="srcVideo" controls playsinline></video>
+      <div class="meta" id="srcMeta"></div>
+      <div class="ctrls" style="justify-content:flex-start"><button class="btn" id="another">Choose another video</button></div>
+      <section id="gifConv" aria-label="Make a GIF from this video"></section>
+    </div>
+    <div class="err" id="convErr" hidden></div>
   </section>
 </main>
 <div class="count" id="count" hidden>3</div>
 <script src="recorder.js"></script>
+<script type="module" src="recorder-gif.js"></script>
 </body>
 </html>
