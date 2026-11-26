@@ -1,6 +1,6 @@
-# Lassoft
+# Lassolve
 
-**Capture, record and extract anything you can see.** Lassoft is a Chrome extension that puts screenshots, screen recording, a design inspector, a data scraper and a media finder behind one button. Everything runs on your device: no accounts, no servers, no tracking.
+**Capture, record and extract anything you can see.** Lassolve is a Chrome extension that puts screenshots, screen recording, a design inspector, a data scraper and a media finder behind one button. Everything runs on your device: no accounts, no servers, no tracking.
 
 ## Features
 
@@ -27,27 +27,27 @@ Great for tutorials, demos and accessibility: cursor highlight, click ripples, s
 
 ### Extract
 - **Scrape data:** detects tables and repeated lists (products, search results, listings) and turns them into columns such as title, link, image, price, date and rating. Also lists every link (internal and external), contact details (emails, phones, social profiles), meta tags, headings and structured data. Export CSV (Excel-friendly), JSON, or copy straight into Google Sheets.
-- **Point and pick:** click one item and Lassoft finds all the similar ones on the page.
-- **Media and files:** finds images (including high-resolution srcset versions, CSS backgrounds, inline SVGs, share images and icons), videos, audio and documents (PDF, Word, Excel, PowerPoint, ZIP and more), including ones the page has hidden or loaded in the background. Filter by type and size, then download what you select into a `Lassoft/<site>` folder.
+- **Point and pick:** click one item and Lassolve finds all the similar ones on the page.
+- **Media and files:** finds images (including high-resolution srcset versions, CSS backgrounds, inline SVGs, share images and icons), videos, audio and documents (PDF, Word, Excel, PowerPoint, ZIP and more), including ones the page has hidden or loaded in the background. Filter by type and size, then download what you select into a `Lassolve/<site>` folder.
 - **Hidden items:** hidden text (collapsed sections, menus, pop-ups) with a one-click reveal, developer comments in the page source, hidden form fields and embedded frames.
 
 ### Everywhere
-Right-click any page and choose **Lassoft** for the main tools. Shortcuts can be changed at `chrome://extensions/shortcuts`.
+Right-click any page and choose **Lassolve** for the main tools. Shortcuts can be changed at `chrome://extensions/shortcuts`.
 
 ## Responsible use
-Lassoft only saves files that a page already serves openly. It does not bypass logins, paywalls, DRM or streaming protection (streaming video is shown as "can't be saved"; use Record instead). Respect copyright, each site's terms of service and robots rules, and privacy law when handling personal data such as contact details.
+Lassolve only saves files that a page already serves openly. It does not bypass logins, paywalls, DRM or streaming protection (streaming video is shown as "can't be saved"; use Record instead). Respect copyright, each site's terms of service and robots rules, and privacy law when handling personal data such as contact details.
 
 ## Install for testing
 1. Open `chrome://extensions` and turn on **Developer mode**.
 2. Click **Load unpacked** and choose this folder.
-3. Pin Lassoft from the puzzle-piece menu.
+3. Pin Lassolve from the puzzle-piece menu.
 
 Works in Chrome 116 or later and other Chromium browsers (Edge, Brave, Opera, Vivaldi, Arc). Chrome doesn't allow extensions on its own pages, the Chrome Web Store or its PDF viewer; recording still works there.
 
 ## Publish on the Chrome Web Store
-1. Upload `lassoft-extension.zip` in the Chrome Web Store Developer Dashboard.
+1. Upload `Lassolve-extension.zip` in the Chrome Web Store Developer Dashboard.
 2. Copy the listing text and permission reasons from `store/STORE_LISTING.md`, and upload the screenshots and promo tile from `store/`.
-3. Privacy policy URL: `https://github.com/suhaimizainalshah/Lassoft/blob/main/PRIVACY.md`.
+3. Privacy policy URL: `https://github.com/suhaimizainalshah/Lassolve/blob/main/PRIVACY.md`.
 
 ## Files
 ```
